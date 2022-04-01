@@ -1,0 +1,5 @@
+Potreban je node > 16.10
+Angular instaliran komandom slicnom  npm install -g @angular/cli@12 (ovo ce instalirati mislim posljednju verziju angulara 12)
+Angular ima release na svakih pola godine, pa cak i ako nemaju neke vaznije izmjene.
+Kreiranje angular aplikacije ng new client --strict false (ovaj strict false nije mandatory ali forsira neki nacin kodiranja, pa zbog
+potencijalnih problema s pracenjem kursa, strict ide na false)
