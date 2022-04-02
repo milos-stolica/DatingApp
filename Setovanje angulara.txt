@@ -3,3 +3,9 @@ Angular instaliran komandom slicnom  npm install -g @angular/cli@12 (ovo ce inst
 Angular ima release na svakih pola godine, pa cak i ako nemaju neke vaznije izmjene.
 Kreiranje angular aplikacije ng new client --strict false (ovaj strict false nije mandatory ali forsira neki nacin kodiranja, pa zbog
 potencijalnih problema s pracenjem kursa, strict ide na false)
+ng serve startuje angular aplikaciju (iz foldera gdje se nalazi kod)
+Za vs code ekstenzije Angular Language Service, Angular Snippets, Bracket Pair Colorisaion toggler (treba podesiti i u settings)
+, Angular Language service
+Koristi Angular Bootstrap (obicni bootstrap nije pozeljan jer koristi jQuery ili js koji mijenja DOM i angular to ne moze da prati) - ng add ngx-bootstrap
+Pazit oko kompatibilnosti verzija
+Font awesome za ikonice - npm install font-awesome
