@@ -5,7 +5,21 @@ Kreiranje angular aplikacije ng new client --strict false (ovaj strict false nij
 potencijalnih problema s pracenjem kursa, strict ide na false)
 ng serve startuje angular aplikaciju (iz foldera gdje se nalazi kod)
 Za vs code ekstenzije Angular Language Service, Angular Snippets, Bracket Pair Colorisaion toggler (treba podesiti i u settings)
-, Angular Language service
+, Angular Language service, vscode-angular-html
 Koristi Angular Bootstrap (obicni bootstrap nije pozeljan jer koristi jQuery ili js koji mijenja DOM i angular to ne moze da prati) - ng add ngx-bootstrap
 Pazit oko kompatibilnosti verzija
 Font awesome za ikonice - npm install font-awesome
+
+Za notifikacije toastr (najpopuarniji vjerovatno) - u root folderu npm install ngx-toastr.
+
+Da bi angular koristio css, potrebno dodati u angular.json file
+
+"styles": [
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./node_modules/font-awesome/css/font-awesome.css",
+              "./node_modules/ngx-toastr/toastr.css",
+              "src/styles.css"
+            ]
+
+Besplatne teme za bootstrap bootswatch, i ukljuciti css ispod bootstrapa u styles u angular.json
