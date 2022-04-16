@@ -4,6 +4,7 @@ using DatingApp.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace DatingApp.API.Extensions
 {
@@ -16,7 +17,9 @@ namespace DatingApp.API.Extensions
 
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlite(config.GetConnectionString("DefaultConnection"));
+                options.UseSqlite(config.GetConnectionString("DefaultConnection"))
+                       .LogTo(Console.WriteLine)
+                       .EnableSensitiveDataLogging();
             });
 
             return services;
