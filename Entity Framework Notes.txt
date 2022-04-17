@@ -1,0 +1,10 @@
+- Instalirati tool za migracije, update baze itd - dotnet tool install --global dotnet-ef --version 5.0.15 (verziju uskladi sa ef-om koji 
+koristis)
+
+- One to many relationship - da bi bila potpuno definisana veza u jednoj klasi je niz objekata druge klase, a u drugoj mora postojati referenca
+na kolonu u prvoj (kljuc iz druge kolone) i prakticno kad entiteti u referenciranoj tabeli ne mogu postojati bez ovoga sto ih referencira,
+prisu se kad im se izbrise parent, itd.
+
+-Dodavanje migracije - dotnet ef migrations add ImeMigracije
+
+-Primjena migracije na bazu - dotnet ef database update

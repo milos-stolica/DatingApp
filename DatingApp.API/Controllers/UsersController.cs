@@ -1,38 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DatingApp.API.Data;
-using DatingApp.API.Entities;
+using AutoMapper;
+using DatingApp.API.DTOs;
+using DatingApp.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DatingApp.API.Controllers
 {
+    [Authorize]
     public class UsersController : BaseApiController
     {
         private readonly ILogger<UsersController> logger;
-        private readonly DataContext db;
+        private readonly IUserRepository userRepository;
+        private readonly IMapper mapper;
 
-        public UsersController(ILogger<UsersController> logger, DataContext db)
+        public UsersController(ILogger<UsersController> logger,
+                               IUserRepository userRepository,
+                               IMapper mapper)
         {
             this.logger = logger;
-            this.db = db;
+            this.userRepository = userRepository;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers()
         {
-            //logger.LogInformation($"Thread id {Thread.CurrentThread.ManagedThreadId}.");
-            return await db.Users.ToListAsync();
+            return Ok(await userRepository.GetMembersAsync());
         }
 
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<AppUser>> GetUser(int id)
+        [HttpGet("{username}")]
+        public async Task<ActionResult<MemberDTO>> GetUser(string username)
         {
-            return await db.Users.FindAsync(id);
+            return await userRepository.GetMembersByUsernameAsync(username);
         }
     }
 }
