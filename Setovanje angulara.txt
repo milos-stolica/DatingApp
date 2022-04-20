@@ -23,3 +23,6 @@ Da bi angular koristio css, potrebno dodati u angular.json file
             ]
 
 Besplatne teme za bootstrap bootswatch, i ukljuciti css ispod bootstrapa u styles u angular.json
+
+Instaliranje ngx-spinnera: komanda ng add ngx-spinner prijavi exception neki. Deinstaliraj sa npm install ngx-spinner, 
+pa instalira sa npm install ngx-spinner --force
