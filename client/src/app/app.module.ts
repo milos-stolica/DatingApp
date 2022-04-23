@@ -22,6 +22,7 @@ import { MemberCardComponent } from './member-card/member-card.component';
 import { JwtInterceptor } from 'src/interceptors/jwt.interceptor';
 import { MemberEditComponent } from './member-edit/member-edit.component';
 import { LoadingInterceptor } from 'src/interceptors/loading.interceptor';
+import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { LoadingInterceptor } from 'src/interceptors/loading.interceptor';
     NotFoundComponent,
     ServerErrorComponent,
     MemberCardComponent,
-    MemberEditComponent
+    MemberEditComponent,
+    PhotoEditorComponent
   ],
   imports: [
     BrowserModule,

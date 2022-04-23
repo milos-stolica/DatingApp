@@ -1,9 +1,11 @@
-﻿using System.Security.Cryptography;
+﻿using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using DatingApp.API.Data;
 using DatingApp.API.DTOs;
 using DatingApp.API.Entities;
+using DatingApp.API.Repositories.Interfaces;
 using DatingApp.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +16,15 @@ namespace DatingApp.API.Controllers
     {
         private readonly DataContext context;
         private readonly ITokenService tokenService;
+        private readonly IUserRepository userRepository;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(DataContext context, 
+                                 ITokenService tokenService,
+                                 IUserRepository userRepository)
         {
             this.context = context;
             this.tokenService = tokenService;
+            this.userRepository = userRepository;
         }
 
         [HttpPost("register")]
@@ -51,7 +57,7 @@ namespace DatingApp.API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
         {
-            var user = await context.Users.SingleOrDefaultAsync(user => user.UserName == loginDTO.Username.ToLower());
+            var user = await userRepository.GetUserByUsernameAsync(loginDTO.Username);
 
             if(user == null)
             {
@@ -74,7 +80,8 @@ namespace DatingApp.API.Controllers
             return new UserDTO()
             {
                 Username = user.UserName,
-                Token = tokenService.CreateToken(user)
+                Token = tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain)?.Url
             };
         }
 
