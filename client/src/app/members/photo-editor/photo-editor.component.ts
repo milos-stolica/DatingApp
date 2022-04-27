@@ -34,7 +34,7 @@ export class PhotoEditorComponent implements OnInit {
 
     this.response = '';
 
-    this.uploader.response.subscribe( res => this.response = res );
+    this.uploader.response.subscribe(res => this.response = res);
   }
 
   ngOnInit(): void {
@@ -57,7 +57,13 @@ export class PhotoEditorComponent implements OnInit {
 
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       if(response) {
-        this.member.photos.push(JSON.parse(response));
+        let photo: Photo = JSON.parse(response);
+        if(photo.isMain) {
+          this.user.photoUrl = photo.url;
+          this.member.photoUrl = photo.url;
+          this.accountService.setCurrentUser(this.user);
+        }
+        this.member.photos.push(photo);
       }
     };
   }
