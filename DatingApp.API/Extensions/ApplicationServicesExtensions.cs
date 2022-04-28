@@ -1,5 +1,6 @@
 ﻿using DatingApp.API.Data;
 using DatingApp.API.Helpers;
+using DatingApp.API.Helpers.ActionFilters;
 using DatingApp.API.Repositories;
 using DatingApp.API.Repositories.Interfaces;
 using DatingApp.API.Services;
@@ -20,6 +21,7 @@ namespace DatingApp.API.Extensions
 
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<LogUserActivity>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 

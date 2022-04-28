@@ -1,5 +1,7 @@
 ﻿using DatingApp.API.DTOs;
 using DatingApp.API.Entities;
+using DatingApp.API.Helpers;
+using DatingApp.API.Helpers.Pagination;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,7 +19,7 @@ namespace DatingApp.API.Repositories.Interfaces
 
         Task<AppUser> GetUserByUsernameAsync(string username);
 
-        Task<IEnumerable<MemberDTO>> GetMembersAsync();
+        Task<PagedList<MemberDTO>> GetMembersAsync(UserParams userParams);
 
         Task<MemberDTO> GetMembersByUsernameAsync(string username);
     }

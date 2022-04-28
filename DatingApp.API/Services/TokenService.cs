@@ -22,7 +22,10 @@ namespace DatingApp.API.Services
         {
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                //this one is needed for one request, so you dont have to query against database, but it is sent through token every time
+                new Claim(JwtRegisteredClaimNames.Gender, string.IsNullOrEmpty(user.Gender) ? "" : user.Gender)
             };
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);

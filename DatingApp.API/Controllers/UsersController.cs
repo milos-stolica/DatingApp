@@ -7,6 +7,8 @@ using CloudinaryDotNet.Actions;
 using DatingApp.API.DTOs;
 using DatingApp.API.Entities;
 using DatingApp.API.Extensions;
+using DatingApp.API.Helpers;
+using DatingApp.API.Helpers.Pagination;
 using DatingApp.API.Repositories.Interfaces;
 using DatingApp.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -36,9 +38,28 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery] UserParams userParams)
         {
-            return Ok(await userRepository.GetMembersAsync());
+            userParams.CurrentUsername = User.GetUsername();
+
+            if(string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = User.GetGender() == "male" ? "female" : "male";
+            }
+
+            var members = await userRepository.GetMembersAsync(userParams);
+
+            var paginationHeader = new PaginationHeader()
+            {
+                CurrentPage = members.CurrentPage,
+                TotalPages = members.TotalPages,
+                PageSize = members.PageSize,
+                TotalCount = members.TotalCount
+            };
+
+            Response.AddPaginationHeader(paginationHeader);
+
+            return members;
         }
 
         [HttpGet("{username}", Name = "GetUser")]
