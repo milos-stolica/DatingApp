@@ -36,6 +36,10 @@ namespace DatingApp.API.Entities
 
         public ICollection<Photo> Photos { get; set; }
 
+        public ICollection<UserLike> LikedByUsers { get; set; }
+
+        public ICollection<UserLike> LikedUsers { get; set; }
+
         //Pravi problem za queryable extension automapera, pa povlaci sve iz baze prilikom projekcije bespotrebno
         //public int GetAge() => DateOfBirth.CalculateAge();
     }
