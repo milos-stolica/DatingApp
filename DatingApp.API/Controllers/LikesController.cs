@@ -1,6 +1,8 @@
 ﻿using DatingApp.API.DTOs;
 using DatingApp.API.Entities;
 using DatingApp.API.Extensions;
+using DatingApp.API.Helpers;
+using DatingApp.API.Helpers.Pagination;
 using DatingApp.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,11 +54,18 @@ namespace DatingApp.API.Controllers
                 LikedUserId = likedUser.Id
             };
 
-            AppUser user = await likesRepo.GetUserWithLikes(userId);
+            //WAY 1.
+            //AppUser user = await likesRepo.GetUserWithLikedBy(likedUser.Id);
+            //user.LikedByUsers.Add(userLike);
 
-            user.LikedUsers.Add(userLike);
+            //WAY 2.
+            //AppUser user = await likesRepo.GetUserWithLikes(userId);
+            //user.LikedUsers.Add(userLike);
 
-            if(await userRepo.SaveAllChangesAsync())
+            //WAY 3. (most optimal probably)
+            likesRepo.AddLike(userLike);
+
+            if (await userRepo.SaveAllChangesAsync())
             {
                 return Ok();
             }
@@ -65,9 +74,23 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LikeDTO>>> GetUserLikes(string predicate)
+        public async Task<ActionResult<PagedList<LikeDTO>>> GetUserLikes([FromQuery] LikesParams likesParams)
         {
-            return Ok(await likesRepo.GetUserLikes(predicate, User.GetUserId()));
+            likesParams.UserId = User.GetUserId();
+
+            var likes = await likesRepo.GetUserLikes(likesParams);
+
+            PaginationHeader pgHeader = new PaginationHeader()
+            {
+                CurrentPage = likes.CurrentPage,
+                TotalPages = likes.TotalPages,
+                PageSize = likes.PageSize,
+                TotalCount = likes.TotalCount
+            };
+
+            Response.AddPaginationHeader(pgHeader);
+
+            return Ok(likes);
         }
 
     }

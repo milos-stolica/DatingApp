@@ -2,6 +2,8 @@
 using DatingApp.API.DTOs;
 using DatingApp.API.Entities;
 using DatingApp.API.Extensions;
+using DatingApp.API.Helpers;
+using DatingApp.API.Helpers.Pagination;
 using DatingApp.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -32,44 +34,47 @@ namespace DatingApp.API.Repositories
                      .FirstOrDefaultAsync(user => user.Id == userId);
         }
 
-        public async Task<IEnumerable<LikeDTO>> GetUserLikes(string predicate, int userId)
+        public async Task<AppUser> GetUserWithLikedBy(int userId)
         {
-            if(predicate == null)
-            {
-                return new List<LikeDTO>();
-            }
+            return await context.Users
+                     .Include(user => user.LikedByUsers)
+                     .FirstOrDefaultAsync(user => user.Id == userId);
+        }
 
-            if(predicate != "liked" && predicate != "likedBy")
-            {
-                return new List<LikeDTO>();
-            }
-
+        public async Task<PagedList<LikeDTO>> GetUserLikes(LikesParams likesParams)
+        {
             var users = context.Users.AsQueryable();
             var likes = context.Likes.AsQueryable();
 
-            if (predicate == "liked")
+            if (likesParams.Predicate == "liked")
             {
-                users = likes.Where(like => like.SourceUserId == userId)
+                users = likes.Where(like => like.SourceUserId == likesParams.UserId)
                              .Select(like => like.LikedUser);
             }
 
-            if (predicate == "likedBy")
+            if (likesParams.Predicate == "likedBy")
             {
-                users = likes.Where(like => like.LikedUserId == userId)
+                users = likes.Where(like => like.LikedUserId == likesParams.UserId)
                              .Select(like => like.SourceUser);
             }
 
-            return await users.OrderBy(user => user.UserName)
-                              .Select(user => new LikeDTO()
-                              {
-                                  Id = user.Id,
-                                  Username = user.UserName,
-                                  Age = user.DateOfBirth.CalculateAge(),
-                                  KnownAs = user.KnownAs,
-                                  PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain).Url,
-                                  City = user.City
-                              })
-                              .ToListAsync();
+            var likeDTOs = users.OrderBy(user => user.UserName)
+                                .Select(user => new LikeDTO()
+                                {
+                                    Id = user.Id,
+                                    Username = user.UserName,
+                                    Age = user.DateOfBirth.CalculateAge(),
+                                    KnownAs = user.KnownAs,
+                                    PhotoUrl = user.Photos.FirstOrDefault(photo => photo.IsMain).Url,
+                                    City = user.City
+                                });
+
+            return await PagedList<LikeDTO>.CreatePagedList(likeDTOs, likesParams.PageNumber, likesParams.PageSize);
+        }
+
+        public void AddLike(UserLike like)
+        {
+            context.Likes.Add(like);
         }
 
         //private LikeDTO MapToLikeDTO(AppUser user)

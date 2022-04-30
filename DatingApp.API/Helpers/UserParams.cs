@@ -1,18 +1,9 @@
-﻿namespace DatingApp.API.Helpers
+﻿using DatingApp.API.Helpers.Pagination;
+
+namespace DatingApp.API.Helpers
 {
-    public class UserParams
+    public class UserParams : PaginationParams
     {
-        private int maxPageSize = 50;
-        private int pageSize = 10;
-
-        public int PageNumber { get; set; } = 1;
-
-        public int PageSize
-        {
-            get => pageSize;
-            set => pageSize = (value > maxPageSize) ? maxPageSize : value;
-        }
-
         public string CurrentUsername { get; set; }
 
         public string Gender { get; set; }

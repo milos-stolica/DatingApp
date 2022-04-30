@@ -43,4 +43,5 @@ export class MemberListComponent implements OnInit {
     this.userParamsService.resetUserParams();
     this.loadMembers();
   }
+
 }

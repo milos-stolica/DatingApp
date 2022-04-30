@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { LikeMember } from 'src/models/likeMember';
+import { LikeParams } from 'src/models/likeParams';
 import { Member } from 'src/models/member';
 import { PaginatedResult } from 'src/models/pagination';
 import { UserParams } from 'src/models/userParams';
@@ -24,7 +26,7 @@ export class MembersService {
       return of(cachedValue);
     }
 
-    let params = this.getPaginationHttpParams(userParams)
+    let params = this.getPaginationHttpParams(userParams.pageSize, userParams.currentPage)
                      .append('minAge', userParams.minAge)
                      .append('maxAge', userParams.maxAge)
                      .append('gender', userParams.gender)
@@ -61,11 +63,22 @@ export class MembersService {
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
   }
 
-  private getPaginationHttpParams(userParams: UserParams) {
+  addLike(username: string) {
+    return this.http.post(this.baseUrl + `likes/${username}`, {});
+  }
+
+  getLikes(likeParams: LikeParams) {
+    let params = this.getPaginationHttpParams(likeParams.pageSize, likeParams.currentPage)
+                     .append('predicate', likeParams.predicate);
+
+    return this.getPaginatedResult<LikeMember[]>(this.baseUrl + 'likes', params);
+  }
+
+  private getPaginationHttpParams(pageSize: number, currentPage: number) {
     let params = new HttpParams();
 
-    params = params.append('pageSize', userParams.pageSize)
-                   .append('pageNumber', userParams.currentPage);
+    params = params.append('pageSize', pageSize)
+                   .append('pageNumber', currentPage);
 
     return params;
   }
