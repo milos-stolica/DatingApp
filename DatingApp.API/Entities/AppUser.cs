@@ -40,6 +40,10 @@ namespace DatingApp.API.Entities
 
         public ICollection<UserLike> LikedUsers { get; set; }
 
+        public ICollection<Message> MessagesSent { get; set; }
+
+        public ICollection<Message> MessagesReceived { get; set; }
+
         //Pravi problem za queryable extension automapera, pa povlaci sve iz baze prilikom projekcije bespotrebno
         //public int GetAge() => DateOfBirth.CalculateAge();
     }

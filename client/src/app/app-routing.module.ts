@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { PreventLosingChangesGuard } from 'src/guards/prevent-losing-changes.guard';
+import { MemberDetailedResolver } from 'src/resolvers/member-detailed.resolver';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { HomeComponent } from './home/home.component';
@@ -20,7 +21,7 @@ const routes : Routes = [
     canActivate: [AuthGuard],
     children: [
       {path:'members', component: MemberListComponent},
-      {path:'members/:username', component: MemberDetailComponent},
+      {path:'members/:username', component: MemberDetailComponent, resolve: {member: MemberDetailedResolver}},
       {path:'member/edit', component: MemberEditComponent, canDeactivate: [PreventLosingChangesGuard]},
       {path:'messages', component: MessagesComponent},
       {path:'lists', component: ListsComponent}

@@ -14,4 +14,11 @@ namespace DatingApp.API.Helpers
 
         public string OrderBy { get; set; } = "lastActive";
     }
+
+    public class MessageParams :  PaginationParams
+    {
+        public string Username { get; set; }
+
+        public string Container { get; set; } = "Unread";
+    }
 }

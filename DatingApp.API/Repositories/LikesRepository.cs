@@ -6,8 +6,6 @@ using DatingApp.API.Helpers;
 using DatingApp.API.Helpers.Pagination;
 using DatingApp.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 

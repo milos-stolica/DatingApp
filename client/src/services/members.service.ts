@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { getPaginatedResult, getPaginationHttpParams } from 'src/helper/paginationHelper';
 import { LikeMember } from 'src/models/likeMember';
 import { LikeParams } from 'src/models/likeParams';
 import { Member } from 'src/models/member';
@@ -26,13 +27,13 @@ export class MembersService {
       return of(cachedValue);
     }
 
-    let params = this.getPaginationHttpParams(userParams.pageSize, userParams.currentPage)
+    let params = getPaginationHttpParams(userParams.pageSize, userParams.currentPage)
                      .append('minAge', userParams.minAge)
                      .append('maxAge', userParams.maxAge)
                      .append('gender', userParams.gender)
                      .append('orderBy', userParams.orderBy);
 
-    return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params)
+    return getPaginatedResult<Member[]>(this.baseUrl + 'users', params, this.http)
                 .pipe(map(result => {
                   this.populateCache(cachedKey, result);
                   return result;
@@ -68,33 +69,10 @@ export class MembersService {
   }
 
   getLikes(likeParams: LikeParams) {
-    let params = this.getPaginationHttpParams(likeParams.pageSize, likeParams.currentPage)
+    let params = getPaginationHttpParams(likeParams.pageSize, likeParams.currentPage)
                      .append('predicate', likeParams.predicate);
 
-    return this.getPaginatedResult<LikeMember[]>(this.baseUrl + 'likes', params);
-  }
-
-  private getPaginationHttpParams(pageSize: number, currentPage: number) {
-    let params = new HttpParams();
-
-    params = params.append('pageSize', pageSize)
-                   .append('pageNumber', currentPage);
-
-    return params;
-  }
-
-  private getPaginatedResult<T>(url: string, params: HttpParams) {
-    return this.http.get<T>(url, { observe: 'response', params }).pipe(
-      map(response => {
-        let paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
-        paginatedResult.result = response.body;
-        if (response.headers.get('Pagination') !== null) {
-          paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
-        }
-
-        return paginatedResult;
-      })
-    );
+    return getPaginatedResult<LikeMember[]>(this.baseUrl + 'likes', params, this.http);
   }
 
   private populateMembersCache(result: PaginatedResult<Member[]>) {

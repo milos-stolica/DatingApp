@@ -13,10 +13,13 @@ namespace DatingApp.API.Data
 
         public DbSet<UserLike> Likes { get; set; }
 
+        public DbSet<Message> Messages { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
+            //configuring UserLike entity
             builder.Entity<UserLike>()
                    .HasKey(ul => new { ul.SourceUserId, ul.LikedUserId });
 
@@ -31,6 +34,19 @@ namespace DatingApp.API.Data
                    .WithMany(ap => ap.LikedByUsers)
                    .HasForeignKey(ul => ul.LikedUserId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            //configuring Message entity
+            builder.Entity<Message>()
+                   .HasOne(m => m.Sender)
+                   .WithMany(au => au.MessagesSent)
+                   .HasForeignKey(m => m.SenderId) //this may be unnecessary
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Message>()
+                   .HasOne(m => m.Recipient)
+                   .WithMany(au => au.MessagesReceived)
+                   .HasForeignKey(m => m.RecipientId)//this may be unnecessary
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
