@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DatingApp.API.Data;
+using DatingApp.API.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +18,15 @@ namespace DatingApp.API.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services,
                                                                 IConfiguration config)
         {
+            services.AddIdentityCore<AppUser>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false; //only example, not recommendation, there are a lot options
+            }).AddRoles<AppRole>()
+              .AddRoleManager<RoleManager<AppRole>>()
+              .AddSignInManager<SignInManager<AppUser>>()
+              .AddRoleValidator<RoleValidator<AppRole>>()
+              .AddEntityFrameworkStores<DataContext>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -26,6 +38,11 @@ namespace DatingApp.API.Extensions
                         ValidateAudience = false
                     };
                 });
+
+            services.AddAuthorization(opt => {
+                opt.AddPolicy("RequireAdminRole", opt => opt.RequireRole("Admin"));
+                opt.AddPolicy("RequireModerateRole", opt => opt.RequireRole("Admin", "Moderator"));
+            });
 
             return services;
         }

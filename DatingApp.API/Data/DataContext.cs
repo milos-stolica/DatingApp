@@ -1,15 +1,22 @@
 ﻿using DatingApp.API.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<AppUser, 
+                                                 AppRole, 
+                                                 int, 
+                                                 IdentityUserClaim<int>, 
+                                                 AppUserRole, 
+                                                 IdentityUserLogin<int>, 
+                                                 IdentityRoleClaim<int>, 
+                                                 IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions options) : base(options)
         {
         }
-
-        public DbSet<AppUser> Users { get; set; }
 
         public DbSet<UserLike> Likes { get; set; }
 
@@ -18,6 +25,24 @@ namespace DatingApp.API.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            //configuring AppUserRole entity
+            //builder.Entity<AppUserRole>()
+            //       .HasKey(ar => new { ar.UserId, ar.RoleId }); - default
+
+            builder.Entity<AppUserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(au => au.Roles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+            //.OnDelete(DeleteBehavior.Cascade); - default
+
+            builder.Entity<AppUserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(ar => ar.Users)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+                //.OnDelete(DeleteBehavior.Cascade); - default
 
             //configuring UserLike entity
             builder.Entity<UserLike>()
