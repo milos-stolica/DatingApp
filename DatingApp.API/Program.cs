@@ -25,6 +25,12 @@ namespace DatingApp.API
                 var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<AppRole>>();
                 await dataContext.Database.MigrateAsync();
+
+                //delete all connections if server crash while users connected
+                var groupConnections = await dataContext.MessageHubConnections.ToListAsync();
+                dataContext.RemoveRange(groupConnections);
+                await dataContext.SaveChangesAsync();
+
                 await Seeder.SeedUsers(userManager, roleManager);
             }
             catch(Exception ex)

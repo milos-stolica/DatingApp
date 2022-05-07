@@ -1,5 +1,6 @@
 using DatingApp.API.Extensions;
 using DatingApp.API.Middleware;
+using DatingApp.API.SignalR.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,8 @@ namespace DatingApp.API
                     .AddIdentityServices(configuration)
                     .AddCors()
                     .AddControllers();
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,9 +39,10 @@ namespace DatingApp.API
 
             string allowedOrigin = "https://localhost:4200";
             app.UseCors(policy => 
-                            policy.AllowAnyHeader().
-                                   AllowAnyMethod().
-                                   WithOrigins(allowedOrigin));
+                            policy.AllowAnyHeader()
+                                   .AllowAnyMethod()
+                                   .AllowCredentials()
+                                   .WithOrigins(allowedOrigin));
 
             app.UseAuthentication();
 
@@ -47,6 +51,8 @@ namespace DatingApp.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<PresenceHub>("hubs/presence");
+                endpoints.MapHub<MessageHub>("hubs/message");
             });
         }
     }

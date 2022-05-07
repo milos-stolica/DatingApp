@@ -80,7 +80,7 @@ namespace DatingApp.API.Repositories
             messages.Where(message => message.DateRead == null &&
                                       message.RecipientUsername == currentUsername)
                     .ToList()
-                    .ForEach(message => message.DateRead = DateTime.Now);
+                    .ForEach(message => message.DateRead = DateTime.UtcNow);
 
             if(context.ChangeTracker.HasChanges())
             {

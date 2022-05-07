@@ -74,7 +74,8 @@ namespace DatingApp.API.Controllers
 
             mapper.Map(memberUpdateDTO, user);
 
-            userRepository.Update(user);
+            //this call will make every property to be modified, and that is not wanted behaviour
+            //userRepository.Update(user);
             if(await userRepository.SaveAllChangesAsync())
             {
                 return NoContent();

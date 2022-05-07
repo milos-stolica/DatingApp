@@ -3,14 +3,16 @@ using System;
 using DatingApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DatingApp.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220505172012_MessageHubGroups")]
+    partial class MessageHubGroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,8 +202,7 @@ namespace DatingApp.API.Migrations
                     b.Property<string>("MessageHubConnectionId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("GroupId")
-                        .IsRequired()
+                    b.Property<string>("MessageHubGroupName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
@@ -210,7 +211,7 @@ namespace DatingApp.API.Migrations
 
                     b.HasKey("MessageHubConnectionId");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("MessageHubGroupName");
 
                     b.ToTable("MessageHubConnections");
                 });
@@ -389,13 +390,9 @@ namespace DatingApp.API.Migrations
 
             modelBuilder.Entity("DatingApp.API.Entities.MessageHubConnection", b =>
                 {
-                    b.HasOne("DatingApp.API.Entities.MessageHubGroup", "Group")
+                    b.HasOne("DatingApp.API.Entities.MessageHubGroup", null)
                         .WithMany("Connections")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
+                        .HasForeignKey("MessageHubGroupName");
                 });
 
             modelBuilder.Entity("DatingApp.API.Entities.Photo", b =>

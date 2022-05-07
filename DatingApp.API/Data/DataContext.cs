@@ -22,6 +22,10 @@ namespace DatingApp.API.Data
 
         public DbSet<Message> Messages { get; set; }
 
+        public DbSet<MessageHubGroup> MessageHubGroups { get; set; }
+
+        public DbSet<MessageHubConnection> MessageHubConnections { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

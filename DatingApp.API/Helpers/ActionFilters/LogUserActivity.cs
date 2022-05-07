@@ -25,7 +25,7 @@ namespace DatingApp.API.Helpers.ActionFilters
             var userId = httpContext.User.GetUserId();
             var user = await userRepo.GetUserByIdAsync(userId);
 
-            user.LastActive = DateTime.Now;
+            user.LastActive = DateTime.UtcNow;
             await userRepo.SaveAllChangesAsync();
         }
     }
