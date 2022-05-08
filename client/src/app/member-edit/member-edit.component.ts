@@ -1,9 +1,8 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { take } from 'rxjs/operators';
 import { Member } from 'src/models/member';
-import { AccountService } from 'src/services/account.service';
 import { MembersService } from 'src/services/members.service';
 
 @Component({
@@ -22,25 +21,14 @@ export class MemberEditComponent implements OnInit {
 
   member: Member;
 
-  constructor(private accountService: AccountService,
-              private memberService: MembersService,
-              private toastr: ToastrService) { }
+  constructor(private memberService: MembersService,
+              private toastr: ToastrService,
+              private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.setLoggedInMember();
-  }
-
-  setLoggedInMember() {
-    this.accountService.currentUser$
-      .pipe(take(1))
-      .subscribe(user => {
-        this.setMember(user.username);
-      });
-  }
-
-  setMember(username: string) {
-    this.memberService.getMember(username)
-      .subscribe(member => this.member = member)
+    this.route.data.subscribe(data => {
+      this.member = data?.member;
+    });
   }
 
   updateMember() {

@@ -4,6 +4,7 @@ import { AdminGuard } from 'src/guards/admin.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { PreventLosingChangesGuard } from 'src/guards/prevent-losing-changes.guard';
 import { MemberDetailedResolver } from 'src/resolvers/member-detailed.resolver';
+import { MemberEditResolver } from 'src/resolvers/member-edit.resolver';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
@@ -24,7 +25,7 @@ const routes : Routes = [
     children: [
       {path:'members', component: MemberListComponent},
       {path:'members/:username', component: MemberDetailComponent, resolve: {member: MemberDetailedResolver}},
-      {path:'member/edit', component: MemberEditComponent, canDeactivate: [PreventLosingChangesGuard]},
+      {path:'member/edit', component: MemberEditComponent, resolve:{member: MemberEditResolver}, canDeactivate: [PreventLosingChangesGuard]},
       {path:'messages', component: MessagesComponent},
       {path:'lists', component: ListsComponent},
       {path:'admin', component: AdminPanelComponent, canActivate: [AdminGuard]}
